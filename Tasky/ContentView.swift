@@ -7,16 +7,40 @@
 
 import SwiftUI
 
+struct TaskyView: View {
+	var i: Int
+
+	@State var label: String = ""
+
+	var body: some View {
+		Text("\(i): " + label)
+			.task {
+				while true {
+					do {
+						try await Task.sleep(for: .seconds(1))
+						label = "\(Date().formatted(date: .omitted, time: .complete))"
+						print("\(i): " + label)
+					} catch {
+						print("Canceled task \(i)")
+						break
+					}
+				}
+			}
+			.id(i)
+	}
+}
+
 struct ContentView: View {
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-        }
-        .padding()
-    }
+	@State private var i = 1
+	var body: some View {
+			VStack {
+				TaskyView(i: i)
+				Button("Update \(i)") {
+					i += 1
+				}
+			}
+			.padding()
+	}
 }
 
 #Preview {
